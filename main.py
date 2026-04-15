@@ -170,7 +170,11 @@ def buy(c):
     bot.send_photo(c.message.chat.id, bio, caption="💰 Pay & send screenshot", reply_markup=kb)
 
 
-# बाकी code SAME रहने दो (approve, reject, stats etc.)
+# बाकी code SAME रहने दो (approve, reject, stats import time
 
 print("Bot Running...")
+
+bot.remove_webhook()
+time.sleep(1)
+
 bot.infinity_polling(skip_pending=True, timeout=60, long_polling_timeout=60)
