@@ -341,7 +341,9 @@ def stats(c):
     bot.send_message(c.message.chat.id, f"📊 SALES: {store['sales']}\n💰 REVENUE: ₹{store['revenue']}")
 
 
-
+@bot.message_handler(func=lambda m: True)
+def test(m):
+    print("MESSAGE AAYA:", m.text)
 
 print("Bot Running...")
 
