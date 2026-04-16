@@ -1,3 +1,4 @@
+print("FILE LOADED")
 import telebot
 import time
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -65,6 +66,7 @@ def payment_text(store, price):
 # =========================
 @bot.message_handler(commands=["start"])
 def start(message):
+    print("START HANDLER ACTIVE") 
     store = get_store()
     add_user(message.chat.id)
 
