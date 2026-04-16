@@ -8,13 +8,13 @@ from io import BytesIO
 from config import TOKEN, ADMIN_ID
 from db import add_user, set_setting, get_setting, get_all_users, users
 
-#from extra_features import setup_features, process_extra_features
+from extra_features import setup_features, process_extra_features
 
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
 
 # ✅ CONNECT EXTRA FEATURES
-#setup_features(bot, users, set_setting, get_setting, int(ADMIN_ID))
-#from extra_features import process_extra_features
+setup_features(bot, users, set_setting, get_setting, int(ADMIN_ID))
+from extra_features import process_extra_features
 
 admin_wait = {}
 offer_price = {}
