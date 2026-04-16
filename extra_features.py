@@ -98,76 +98,75 @@ def setup_features(bot, users, set_setting, get_setting, ADMIN_ID):
         elif msg.text == "💰 Earn Money":
             bot.send_message(msg.chat.id, "💰 Invite users & earn money!")
 
-    @bot.message_handler(content_types=['text','photo','video'])
-    def handle_all(msg):
+def process_extra_features(bot, users, msg, admin_state, withdraw_state, ADMIN_ID):
+    user_id = msg.from_user.id
+    update_user(user_id, msg.from_user.username)
 
-        user_id = msg.from_user.id
-        update_user(user_id, msg.from_user.username)
+    # ================= ADMIN BROADCAST =================
+    if admin_state.get(user_id) == "broadcast":
+        admin_state.pop(user_id, None)
 
-        # ================= ADMIN BROADCAST =================
-        if admin_state.get(user_id) == "broadcast":
-            admin_state.pop(user_id, None)
+        for user in users.find():
+            try:
+                bot.copy_message(user["user_id"], msg.chat.id, msg.message_id)
+            except:
+                pass
 
-            for user in users.find():
-                try:
-                    bot.copy_message(user["user_id"], msg.chat.id, msg.message_id)
-                except:
-                    pass
+        bot.send_message(msg.chat.id, "✅ Broadcast Done")
+        return
 
-            bot.send_message(msg.chat.id, "✅ Broadcast Done")
-            return
+    # ================= WITHDRAW =================
+    if withdraw_state.get(user_id):
 
-        # ================= WITHDRAW =================
-        if withdraw_state.get(user_id):
+        user = users.find_one({"user_id": user_id})
+        balance = user.get("balance", 0)
 
-            user = users.find_one({"user_id": user_id})
-            balance = user.get("balance", 0)
-
-            if balance < 10:
-                bot.send_message(user_id, "❌ Min ₹10 required")
-                withdraw_state.pop(user_id, None)
-                return
-
+        if balance < 10:
+            bot.send_message(user_id, "❌ Min ₹10 required")
             withdraw_state.pop(user_id, None)
-
-            withdraw_data = msg.text if msg.content_type == "text" else msg.photo[-1].file_id
-
-            users.update_one(
-                {"user_id": user_id},
-                {"$set": {
-                    "withdraw_status": "pending",
-                    "withdraw_data": withdraw_data
-                }}
-            )
-
-            kb = InlineKeyboardMarkup()
-            kb.add(
-                InlineKeyboardButton("✅ Pay Done", callback_data=f"pay_{user_id}"),
-                InlineKeyboardButton("❌ Reject", callback_data=f"wreject_{user_id}")
-            )
-
-            bot.send_message(ADMIN_ID,
-                f"💸 Withdraw Request\nUser: {user_id}\n₹{balance}",
-                reply_markup=kb
-            )
-
-            bot.send_message(user_id, "⏳ Request Sent")
             return
 
-        # ================= PAYMENT PROOF =================
-        if msg.content_type == "photo":
-            kb = InlineKeyboardMarkup()
-            kb.add(
-                InlineKeyboardButton("✅ Approve", callback_data=f"approve_{user_id}"),
-                InlineKeyboardButton("❌ Reject", callback_data=f"reject_{user_id}")
-            )
+        withdraw_state.pop(user_id, None)
 
-            bot.send_photo(
-                ADMIN_ID,
-                msg.photo[-1].file_id,
-                caption=f"💰 Payment Request\nUser: {user_id}",
-                reply_markup=kb
-            )
+        withdraw_data = msg.text if msg.content_type == "text" else msg.photo[-1].file_id
 
-            bot.send_message(user_id, "⏳ Payment Under Review")
-            return
+        users.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "withdraw_status": "pending",
+                "withdraw_data": withdraw_data
+            }}
+        )
+
+        kb = InlineKeyboardMarkup()
+        kb.add(
+            InlineKeyboardButton("✅ Pay Done", callback_data=f"pay_{user_id}"),
+            InlineKeyboardButton("❌ Reject", callback_data=f"wreject_{user_id}")
+        )
+
+        bot.send_message(
+            ADMIN_ID,
+            f"💸 Withdraw Request\nUser: {user_id}\n₹{balance}",
+            reply_markup=kb
+        )
+
+        bot.send_message(user_id, "⏳ Request Sent")
+        return
+
+    # ================= PAYMENT PROOF =================
+    if msg.content_type == "photo":
+        kb = InlineKeyboardMarkup()
+        kb.add(
+            InlineKeyboardButton("✅ Approve", callback_data=f"approve_{user_id}"),
+            InlineKeyboardButton("❌ Reject", callback_data=f"reject_{user_id}")
+        )
+
+        bot.send_photo(
+            ADMIN_ID,
+            msg.photo[-1].file_id,
+            caption=f"💰 Payment Request\nUser: {user_id}",
+            reply_markup=kb
+        )
+
+        bot.send_message(user_id, "⏳ Payment Under Review")
+        return
