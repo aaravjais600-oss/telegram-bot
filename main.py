@@ -156,7 +156,7 @@ def handle_all(m):
             return
 from extra_features import process_extra_features
 
-    process_extra_features(
+        process_extra_features(
         bot,
         users,
         m,
