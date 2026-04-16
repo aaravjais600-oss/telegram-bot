@@ -13,6 +13,7 @@ bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
 
 # ✅ CONNECT EXTRA FEATURES
 setup_features(bot, users, set_setting, get_setting, int(ADMIN_ID))
+from extra_features import process_extra_features
 
 admin_wait = {}
 offer_price = {}
@@ -153,6 +154,9 @@ def handle_all(m):
         if not m.photo:
             bot.send_message(m.chat.id, "📸 Please send a valid screenshot image.")
             return
+from extra_features import process_extra_features
+
+process_extra_features(bot, users, m, admin_wait, pending_screenshot, int(ADMIN_ID))
 
         pending_screenshot.pop(user_id, None)
 
@@ -173,6 +177,7 @@ def handle_all(m):
             m.chat.id,
             "✅ Screenshot received!\n⏳ Verification in progress...\n🔗 Access will be sent soon."
         )
+        
 
 
 # =========================
