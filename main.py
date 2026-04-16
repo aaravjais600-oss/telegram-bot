@@ -7,7 +7,8 @@ from io import BytesIO
 from config import TOKEN, ADMIN_ID
 from db import add_user, set_setting, get_setting, get_all_users, users
 
-from extra_features import setup_features
+
+from extra_features import setup_features, process_extra_feature
 
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
 
@@ -154,7 +155,6 @@ def handle_all(m):
         if not m.photo:
             bot.send_message(m.chat.id, "📸 Please send a valid screenshot image.")
             return
-from extra_features import process_extra_features
 
         process_extra_features(
         bot,
