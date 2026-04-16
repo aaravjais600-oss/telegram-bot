@@ -156,7 +156,15 @@ def handle_all(m):
             return
 from extra_features import process_extra_features
 
-process_extra_features(bot, users, m, admin_wait, pending_screenshot, int(ADMIN_ID))
+    process_extra_features(
+        bot,
+        users,
+        m,
+        admin_wait,
+        pending_screenshot,
+        int(ADMIN_ID)
+    )
+
 
         pending_screenshot.pop(user_id, None)
 
