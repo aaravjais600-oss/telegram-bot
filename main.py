@@ -156,7 +156,7 @@ def handle_all(m):
     # =====================
     # BROADCAST
     # =====================
-    if broadcast_wait.get(user_id):
+if broadcast_wait.get(user_id):
 
     all_users = get_all_users()
     print("ALL USERS:", all_users)
