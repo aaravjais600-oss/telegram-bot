@@ -276,7 +276,7 @@ def buy(c):
     qr_link = f"upi://pay?pa={store['upi']}&am={price}&cu=INR"
     kb = InlineKeyboardMarkup()
     # ✅ PAY NOW BUTTON (UPI DEEP LINK)
-    kb.add(InlineKeyboardButton("🚀 PAY NOW", url=https://aaravjais600-oss.github.io/index.html/))
+    kb.add(InlineKeyboardButton("🚀 PAY NOW","url=https://aaravjais600-oss.github.io/index.html/"))
     kb.add(InlineKeyboardButton("💳 I HAVE PAID", callback_data="paid"))
     kb.add(InlineKeyboardButton("❌ CANCEL ORDER", callback_data="cancel"))
 
