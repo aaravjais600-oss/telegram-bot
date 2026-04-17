@@ -143,8 +143,12 @@ def broadcast_start(c):
 # =========================
 # FIXED HANDLER (NO CONFLICT)
 # =========================
-@bot.message_handler(func=lambda m: m.from_user.id in admin_wait or pending_screenshot.get(m.from_user.id), content_types=['text', 'photo'])
-def handle_all(m):
+@bot.message_handler(
+    func=lambda m: m.from_user.id in admin_wait 
+    or pending_screenshot.get(m.from_user.id)
+    or broadcast_wait.get(m.from_user.id),
+    content_types=['text', 'photo', 'video']
+)
 
     user_id = m.from_user.id
     
