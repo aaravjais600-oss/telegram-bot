@@ -149,6 +149,12 @@ def broadcast_start(c):
     or broadcast_wait.get(m.from_user.id),
     content_types=['text', 'photo', 'video']
 )
+@bot.message_handler(
+    func=lambda m: m.from_user.id in admin_wait 
+    or pending_screenshot.get(m.from_user.id)
+    or broadcast_wait.get(m.from_user.id),
+    content_types=['text', 'photo', 'video']
+)
 def handle_all(m):
 
     user_id = m.from_user.id
@@ -159,7 +165,6 @@ def handle_all(m):
     if broadcast_wait.get(user_id):
 
         all_users = get_all_users()
-        print("ALL USERS:", all_users)
 
         success = 0
         failed = 0
@@ -180,8 +185,7 @@ def handle_all(m):
                 success += 1
                 time.sleep(0.05)
 
-            except Exception as e:
-                print("FAILED USER:", uid, "ERROR:", e)
+            except:
                 failed += 1
 
         bot.send_message(
@@ -212,36 +216,35 @@ def handle_all(m):
         admin_wait.pop(user_id, None)
         return
 
- # =====================
-# SCREENSHOT
-# =====================
-if pending_screenshot.get(user_id):
+    # =====================
+    # SCREENSHOT
+    # =====================
+    if pending_screenshot.get(user_id):
 
-    if not m.photo:
-        bot.send_message(m.chat.id, "📸 Please send a valid screenshot image.")
+        if not m.photo:
+            bot.send_message(m.chat.id, "📸 Please send a valid screenshot image.")
+            return
+
+        kb = InlineKeyboardMarkup()
+        kb.add(
+            InlineKeyboardButton("✅ APPROVE", callback_data=f"approve_{user_id}"),
+            InlineKeyboardButton("❌ REJECT", callback_data=f"reject_{user_id}")
+        )
+
+        bot.send_photo(
+            ADMIN_ID,
+            m.photo[-1].file_id,
+            caption=f"💰 PAYMENT PROOF\nUser: {user_id}",
+            reply_markup=kb
+        )
+
+        bot.send_message(
+            m.chat.id,
+            "✅ Screenshot received!\n⏳ Verification in progress..."
+        )
+
+        pending_screenshot.pop(user_id, None)
         return
-
-    kb = InlineKeyboardMarkup()
-    kb.add(
-        InlineKeyboardButton("✅ APPROVE", callback_data=f"approve_{user_id}"),
-        InlineKeyboardButton("❌ REJECT", callback_data=f"reject_{user_id}")
-    )
-
-    bot.send_photo(
-        ADMIN_ID,
-        m.photo[-1].file_id,
-        caption=f"💰 PAYMENT PROOF\nUser: {user_id}",
-        reply_markup=kb
-    )
-
-    bot.send_message(
-        m.chat.id,
-        "✅ Screenshot received!\n⏳ Verification in progress..."
-    )
-
-    pending_screenshot.pop(user_id, None)
-    return
-
         
 # =========================
 # BUY
