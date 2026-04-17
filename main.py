@@ -249,7 +249,6 @@ def handle_all(m):
             m.chat.id,
             "✅ Screenshot received!\n⏳ Verification in progress...\n🔗 Access will be sent soon."
         )
-        )
         
 
 
