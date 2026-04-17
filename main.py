@@ -240,7 +240,7 @@ def handle_all(m):
 
         bot.send_message(
             m.chat.id,
-            "✅ Screenshot received!\n⏳ Verification in progress..."
+            "✅ Screenshot received!\n⏳ Verification in progress...\n🔗 Access will be sent soon."
         )
 
         pending_screenshot.pop(user_id, None)
