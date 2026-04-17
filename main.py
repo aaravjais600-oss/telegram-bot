@@ -19,6 +19,7 @@ from extra_features import process_extra_features
 admin_wait = {}
 offer_price = {}
 pending_screenshot = {}
+broadcast_wait = {}
 
 
 # =========================
@@ -110,6 +111,7 @@ def admin_panel(message):
     kb.add(InlineKeyboardButton("✏ SET START TEXT", callback_data="set_start_text"))
     kb.add(InlineKeyboardButton("👥 USERS", callback_data="users"))
     kb.add(InlineKeyboardButton("📊 STATS", callback_data="stats"))
+    kb.add(InlineKeyboardButton("📢 BROADCAST", callback_data="broadcast"))
 
     bot.send_message(message.chat.id, "👑 *ADMIN PANEL*", reply_markup=kb)
 
@@ -125,6 +127,18 @@ def admin_set(c):
     admin_wait[c.from_user.id] = c.data.replace("set_", "")
     bot.send_message(c.message.chat.id, "✏ Send value now:")
 
+@bot.callback_query_handler(func=lambda c: c.data == "broadcast")
+def broadcast_start(c):
+    if int(c.from_user.id) != int(ADMIN_ID):
+        return
+
+    broadcast_wait[c.from_user.id] = True
+
+    bot.send_message(
+        c.message.chat.id,
+        "📢 Send message to broadcast\n\n✅ Text / Photo / Video allowed"
+    )
+
 
 # =========================
 # FIXED HANDLER (NO CONFLICT)
@@ -133,6 +147,38 @@ def admin_set(c):
 def handle_all(m):
 
     user_id = m.from_user.id
+    
+    # 🔥🔥🔥 YAHI DALNA HAI (सबसे पहले)
+    if broadcast_wait.get(user_id):
+
+        all_users = get_all_users()
+        success = 0
+        failed = 0
+
+        for uid in all_users:
+            try:
+                if m.text:
+                    bot.send_message(uid, m.text)
+
+                elif m.photo:
+                    bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
+
+                elif m.video:
+                    bot.send_video(uid, m.video.file_id, caption=m.caption or "")
+
+                success += 1
+                time.sleep(0.05)
+
+            except:
+                failed += 1
+
+        bot.send_message(
+            m.chat.id,
+            f"📢 Broadcast Done\n\n✅ Success: {success}\n❌ Failed: {failed}"
+        )
+
+        broadcast_wait.pop(user_id, None)
+        return
 
     if user_id in admin_wait:
         action = admin_wait[user_id]
