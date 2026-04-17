@@ -212,59 +212,37 @@ def handle_all(m):
         admin_wait.pop(user_id, None)
         return
 
-    # =====================
-    # SCREENSHOT
-    # =====================
-    if pending_screenshot.get(user_id):
+ # =====================
+# SCREENSHOT
+# =====================
+if pending_screenshot.get(user_id):
 
-        if not m.photo:
-            bot.send_message(m.chat.id, "📸 Please send a valid screenshot image.")
-            return
+    if not m.photo:
+        bot.send_message(m.chat.id, "📸 Please send a valid screenshot image.")
+        return
 
-        # 👇 DIRECT ADMIN KO SEND KARO
+    kb = InlineKeyboardMarkup()
+    kb.add(
+        InlineKeyboardButton("✅ APPROVE", callback_data=f"approve_{user_id}"),
+        InlineKeyboardButton("❌ REJECT", callback_data=f"reject_{user_id}")
+    )
 
-kb = InlineKeyboardMarkup()
-kb.add(
-    InlineKeyboardButton("✅ APPROVE", callback_data=f"approve_{user_id}"),
-    InlineKeyboardButton("❌ REJECT", callback_data=f"reject_{user_id}")
-)
+    bot.send_photo(
+        ADMIN_ID,
+        m.photo[-1].file_id,
+        caption=f"💰 PAYMENT PROOF\nUser: {user_id}",
+        reply_markup=kb
+    )
 
-bot.send_photo(
-    ADMIN_ID,
-    m.photo[-1].file_id,
-    caption=f"💰 PAYMENT PROOF\nUser: {user_id}",
-    reply_markup=kb
-)
+    bot.send_message(
+        m.chat.id,
+        "✅ Screenshot received!\n⏳ Verification in progress..."
+    )
 
-bot.send_message(
-    m.chat.id,
-    "✅ Screenshot received!\n⏳ Verification in progress..."
-)
+    pending_screenshot.pop(user_id, None)
+    return
 
-# 👇 LAST ME REMOVE KARO
-pending_screenshot.pop(user_id, None)
-return
-
-        kb = InlineKeyboardMarkup()
-        kb.add(
-            InlineKeyboardButton("✅ APPROVE", callback_data=f"approve_{user_id}"),
-            InlineKeyboardButton("❌ REJECT", callback_data=f"reject_{user_id}")
-        )
-
-        bot.send_photo(
-            ADMIN_ID,
-            m.photo[-1].file_id,
-            caption=f"💰 PAYMENT PROOF\nUser: {user_id}",
-            reply_markup=kb
-        )
-
-        bot.send_message(
-            m.chat.id,
-            "✅ Screenshot received!\n⏳ Verification in progress...\n🔗 Access will be sent soon."
-        )
         
-
-
 # =========================
 # BUY
 # =========================
