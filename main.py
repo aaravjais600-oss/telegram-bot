@@ -221,16 +221,29 @@ def handle_all(m):
             bot.send_message(m.chat.id, "📸 Please send a valid screenshot image.")
             return
 
-        process_extra_features(
-            bot,
-            users,
-            m,
-            admin_wait,
-            pending_screenshot,
-            int(ADMIN_ID)
-        )
+        # 👇 DIRECT ADMIN KO SEND KARO
 
-        pending_screenshot.pop(user_id, None)
+kb = InlineKeyboardMarkup()
+kb.add(
+    InlineKeyboardButton("✅ APPROVE", callback_data=f"approve_{user_id}"),
+    InlineKeyboardButton("❌ REJECT", callback_data=f"reject_{user_id}")
+)
+
+bot.send_photo(
+    ADMIN_ID,
+    m.photo[-1].file_id,
+    caption=f"💰 PAYMENT PROOF\nUser: {user_id}",
+    reply_markup=kb
+)
+
+bot.send_message(
+    m.chat.id,
+    "✅ Screenshot received!\n⏳ Verification in progress..."
+)
+
+# 👇 LAST ME REMOVE KARO
+pending_screenshot.pop(user_id, None)
+return
 
         kb = InlineKeyboardMarkup()
         kb.add(
