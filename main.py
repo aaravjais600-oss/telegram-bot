@@ -69,7 +69,7 @@ def payment_text(store, price):
 def start(message):
     print("START HANDLER ACTIVE") 
     store = get_store()
-    add_user(message.chat.id)
+    add_user(int(message.chat.id))
 
     custom = store["start_text"]
 
@@ -158,39 +158,40 @@ def handle_all(m):
     # =====================
     if broadcast_wait.get(user_id):
 
-        all_users = get_all_users()
-        print("ALL USERS:", all_users)
+    all_users = get_all_users()
+    print("ALL USERS:", all_users)
 
-        success = 0
-        failed = 0
+    success = 0
+    failed = 0
 
-        for uid in all_users:
-    try:
-        uid = int(uid)
+    for uid in all_users:
+        try:
+            uid = int(uid)
 
-        if m.text:
-            bot.send_message(uid, m.text)
+            if m.text:
+                bot.send_message(uid, m.text)
 
-        elif m.photo:
-            bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
+            elif m.photo:
+                bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
 
-        elif m.video:
-            bot.send_video(uid, m.video.file_id, caption=m.caption or "")
+            elif m.video:
+                bot.send_video(uid, m.video.file_id, caption=m.caption or "")
 
-        success += 1
-        time.sleep(0.05)
+            success += 1
+            time.sleep(0.05)
 
-    except Exception as e:
-        print("FAILED USER:", uid, "ERROR:", e)
-        failed += 1
+        except Exception as e:
+            print("FAILED USER:", uid, "ERROR:", e)
+            failed += 1
 
-        bot.send_message(
-            m.chat.id,
-            f"📢 Broadcast Done\n\n✅ Success: {success}\n❌ Failed: {failed}"
-        )
+    # ✅ LOOP KE BAHAR
+    bot.send_message(
+        m.chat.id,
+        f"📢 Broadcast Done\n\n✅ Success: {success}\n❌ Failed: {failed}"
+    )
 
-        broadcast_wait.pop(user_id, None)
-        return
+    broadcast_wait.pop(user_id, None)
+    return
 
     # =====================
     # ADMIN SETTINGS
