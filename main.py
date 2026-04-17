@@ -153,40 +153,41 @@ def handle_all(m):
     user_id = m.from_user.id
     
     # 🔥🔥🔥 YAHI DALNA HAI (सबसे पहले)
-    if broadcast_wait.get(user_id):
+   if broadcast_wait.get(user_id):
 
-        all_users = get_all_users()
-        print("ALL USERS:", all_users)
-        success = 0
-        failed = 0
+    all_users = get_all_users()
+    print("ALL USERS:", all_users)
 
-for uid in all_users:
-    try:
-        uid = int(uid)
+    success = 0
+    failed = 0
 
-        if m.text:
-            bot.send_message(uid, m.text)
+    for uid in all_users:
+        try:
+            uid = int(uid)
 
-        elif m.photo:
-            bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
+            if m.text:
+                bot.send_message(uid, m.text)
 
-        elif m.video:
-            bot.send_video(uid, m.video.file_id, caption=m.caption or "")
+            elif m.photo:
+                bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
 
-        success += 1
-        time.sleep(0.05)
+            elif m.video:
+                bot.send_video(uid, m.video.file_id, caption=m.caption or "")
 
-    except Exception as e:
-        print("FAILED USER:", uid, "ERROR:", e)
-        failed += 1
+            success += 1
+            time.sleep(0.05)
 
-        bot.send_message(
-            m.chat.id,
-            f"📢 Broadcast Done\n\n✅ Success: {success}\n❌ Failed: {failed}"
-        )
+        except Exception as e:
+            print("FAILED USER:", uid, "ERROR:", e)
+            failed += 1
 
-        broadcast_wait.pop(user_id, None)
-        return
+    bot.send_message(
+        m.chat.id,
+        f"📢 Broadcast Done\n\n✅ Success: {success}\n❌ Failed: {failed}"
+    )
+
+    broadcast_wait.pop(user_id, None)
+    return
 
     if user_id in admin_wait:
         action = admin_wait[user_id]
