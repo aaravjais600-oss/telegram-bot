@@ -150,45 +150,51 @@ def broadcast_start(c):
     content_types=['text', 'photo', 'video']
 )
 def handle_all(m):
+
     user_id = m.from_user.id
-    
-    # 🔥🔥🔥 YAHI DALNA HAI (सबसे पहले)
-   if broadcast_wait.get(user_id):
 
-    all_users = get_all_users()
-    print("ALL USERS:", all_users)
+    # =====================
+    # BROADCAST
+    # =====================
+    if broadcast_wait.get(user_id):
 
-    success = 0
-    failed = 0
+        all_users = get_all_users()
+        print("ALL USERS:", all_users)
 
-    for uid in all_users:
-        try:
-            uid = int(uid)
+        success = 0
+        failed = 0
 
-            if m.text:
-                bot.send_message(uid, m.text)
+        for uid in all_users:
+            try:
+                uid = int(uid)
 
-            elif m.photo:
-                bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
+                if m.text:
+                    bot.send_message(uid, m.text)
 
-            elif m.video:
-                bot.send_video(uid, m.video.file_id, caption=m.caption or "")
+                elif m.photo:
+                    bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
 
-            success += 1
-            time.sleep(0.05)
+                elif m.video:
+                    bot.send_video(uid, m.video.file_id, caption=m.caption or "")
 
-        except Exception as e:
-            print("FAILED USER:", uid, "ERROR:", e)
-            failed += 1
+                success += 1
+                time.sleep(0.05)
 
-    bot.send_message(
-        m.chat.id,
-        f"📢 Broadcast Done\n\n✅ Success: {success}\n❌ Failed: {failed}"
-    )
+            except Exception as e:
+                print("FAILED USER:", uid, "ERROR:", e)
+                failed += 1
 
-    broadcast_wait.pop(user_id, None)
-    return
+        bot.send_message(
+            m.chat.id,
+            f"📢 Broadcast Done\n\n✅ Success: {success}\n❌ Failed: {failed}"
+        )
 
+        broadcast_wait.pop(user_id, None)
+        return
+
+    # =====================
+    # ADMIN SETTINGS
+    # =====================
     if user_id in admin_wait:
         action = admin_wait[user_id]
 
@@ -206,6 +212,9 @@ def handle_all(m):
         admin_wait.pop(user_id, None)
         return
 
+    # =====================
+    # SCREENSHOT
+    # =====================
     if pending_screenshot.get(user_id):
 
         if not m.photo:
@@ -213,14 +222,13 @@ def handle_all(m):
             return
 
         process_extra_features(
-        bot,
-        users,
-        m,
-        admin_wait,
-        pending_screenshot,
-        int(ADMIN_ID)
-    )
-
+            bot,
+            users,
+            m,
+            admin_wait,
+            pending_screenshot,
+            int(ADMIN_ID)
+        )
 
         pending_screenshot.pop(user_id, None)
 
@@ -240,6 +248,7 @@ def handle_all(m):
         bot.send_message(
             m.chat.id,
             "✅ Screenshot received!\n⏳ Verification in progress...\n🔗 Access will be sent soon."
+        )
         )
         
 
