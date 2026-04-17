@@ -273,7 +273,10 @@ def buy(c):
     img.save(bio, "PNG")
     bio.seek(0)
 
+    qr_link = f"upi://pay?pa={store['upi']}&am={price}&cu=INR"
     kb = InlineKeyboardMarkup()
+    # ✅ PAY NOW BUTTON (UPI DEEP LINK)
+    kb.add(InlineKeyboardButton("🚀 PAY NOW", url=qr_link))
     kb.add(InlineKeyboardButton("💳 I HAVE PAID", callback_data="paid"))
     kb.add(InlineKeyboardButton("❌ CANCEL ORDER", callback_data="cancel"))
 
