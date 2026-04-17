@@ -156,25 +156,29 @@ def handle_all(m):
     if broadcast_wait.get(user_id):
 
         all_users = get_all_users()
+        print("ALL USERS:", all_users)
         success = 0
         failed = 0
 
-        for uid in all_users:
-            try:
-                if m.text:
-                    bot.send_message(uid, m.text)
+for uid in all_users:
+    try:
+        uid = int(uid)
 
-                elif m.photo:
-                    bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
+        if m.text:
+            bot.send_message(uid, m.text)
 
-                elif m.video:
-                    bot.send_video(uid, m.video.file_id, caption=m.caption or "")
+        elif m.photo:
+            bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
 
-                success += 1
-                time.sleep(0.05)
+        elif m.video:
+            bot.send_video(uid, m.video.file_id, caption=m.caption or "")
 
-            except:
-                failed += 1
+        success += 1
+        time.sleep(0.05)
+
+    except Exception as e:
+        print("FAILED USER:", uid, "ERROR:", e)
+        failed += 1
 
         bot.send_message(
             m.chat.id,
