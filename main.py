@@ -149,7 +149,7 @@ def broadcast_start(c):
     or broadcast_wait.get(m.from_user.id),
     content_types=['text', 'photo', 'video']
 )
-
+def handle_all(m):
     user_id = m.from_user.id
     
     # 🔥🔥🔥 YAHI DALNA HAI (सबसे पहले)
