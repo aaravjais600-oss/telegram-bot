@@ -20,7 +20,7 @@ def add_user(user_id):
 
 
 def get_all_users():
-    return list(users.find())
+    return [user["user_id"] for user in users.find()]
 
 
 # =========================
