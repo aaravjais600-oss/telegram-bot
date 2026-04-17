@@ -6,7 +6,7 @@ import qrcode
 from io import BytesIO
 
 from config import TOKEN, ADMIN_ID
-from db import add_user, set_setting, get_setting, get_all_users, users, remove_user
+from db import add_user, set_setting, get_setting, get_all_users, users
 
 from extra_features import setup_features, process_extra_features
 
@@ -165,24 +165,24 @@ def handle_all(m):
         failed = 0
 
         for uid in all_users:
-            try:
-                uid = int(uid)
+    try:
+        uid = int(uid)
 
-                if m.text:
-                    bot.send_message(uid, m.text)
+        if m.text:
+            bot.send_message(uid, m.text)
 
-                elif m.photo:
-                    bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
+        elif m.photo:
+            bot.send_photo(uid, m.photo[-1].file_id, caption=m.caption or "")
 
-                elif m.video:
-                    bot.send_video(uid, m.video.file_id, caption=m.caption or "")
+        elif m.video:
+            bot.send_video(uid, m.video.file_id, caption=m.caption or "")
 
-                success += 1
-                time.sleep(0.05)
+        success += 1
+        time.sleep(0.05)
 
-            except Exception as e:
-                print("FAILED USER:", uid, "ERROR:", e)
-                failed += 1
+    except Exception as e:
+        print("FAILED USER:", uid, "ERROR:", e)
+        failed += 1
 
         bot.send_message(
             m.chat.id,
