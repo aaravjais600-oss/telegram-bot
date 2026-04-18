@@ -52,7 +52,7 @@ def payment_text(store, price):
 
 📛 𝐀𝐜𝐜𝐞𝐬𝐬: {store['name'] or "Not Set"}
 💵 𝐀𝐦𝐨𝐮𝐧𝐭: ₹{price}
-🏦 𝐔𝐏𝐈 𝐈𝐃: 🏦 <b>UPI ID:</b> <code>{store['upi'] or "Not Set"}</code>
+🏦 𝐔𝐏𝐈 𝐈𝐃: <code>{store['upi'] or "Not Set"}</code>
 
 1️⃣ 𝐒𝐜𝐚𝐧 𝐐𝐑 𝐂𝐨𝐝𝐞
 2️⃣ 𝐏𝐚𝐲 𝐮𝐬𝐢𝐧𝐠 𝐔𝐏𝐈
